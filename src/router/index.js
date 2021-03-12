@@ -39,6 +39,11 @@ const routes = [
     path: '/camera',
     name: 'Camera',
     component: () => import('@/views/Camera.vue')
+  },
+  {
+    path: '/half',
+    name: 'Half',
+    component: () => import('@/views/Half.vue')
   }
 ]
 
