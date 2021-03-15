@@ -8,10 +8,10 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
 import { defineComponent, onMounted } from 'vue'
 export default defineComponent({
-  name: 'Camera',
+  name: 'CameraGroup',
   setup () {
     const SCREEN_WIDTH = window.innerWidth
-    const SCREEN_HEIGHT = window.innerWidth
+    const SCREEN_HEIGHT = window.innerHeight
     const aspect = SCREEN_WIDTH / SCREEN_HEIGHT
     // const frustumSize = 600
 

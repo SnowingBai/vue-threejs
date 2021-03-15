@@ -1,4 +1,5 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
+import RouterTransition from '@/components/transition/router-transition.vue'
 
 const routes = [
   {
@@ -36,14 +37,27 @@ const routes = [
     component: () => import('@/views/Geometry.vue')
   },
   {
-    path: '/camera',
-    name: 'Camera',
-    component: () => import('@/views/Camera.vue')
-  },
-  {
     path: '/half',
     name: 'Half',
     component: () => import('@/views/Half.vue')
+  },
+  {
+    path: '/camera',
+    name: 'Camera',
+    redirect: '/camera/array',
+    component: RouterTransition,
+    children: [
+      {
+        path: 'array',
+        name: 'CameraArray',
+        component: () => import('@/views/camera/array.vue')
+      },
+      {
+        path: 'group',
+        name: 'CameraGroup',
+        component: () => import('@/views/camera/group.vue')
+      }
+    ]
   }
 ]
 
