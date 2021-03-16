@@ -56,6 +56,16 @@ const routes = [
         path: 'group',
         name: 'CameraGroup',
         component: () => import('@/views/camera/group.vue')
+      },
+      {
+        path: 'cube',
+        name: 'CameraCube',
+        component: () => import('@/views/camera/cube.vue')
+      },
+      {
+        path: 'stereo',
+        name: 'CameraStereo',
+        component: () => import('@/views/camera/stereo.vue')
       }
     ]
   }
