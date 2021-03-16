@@ -68,6 +68,19 @@ const routes = [
         component: () => import('@/views/camera/stereo.vue')
       }
     ]
+  },
+  {
+    path: '/texture',
+    name: 'Texture',
+    redirect: 'texture/index',
+    component: RouterTransition,
+    children: [
+      {
+        path: 'index',
+        name: 'TextureIndex',
+        component: () => import('@/views/texture/index.vue')
+      }
+    ]
   }
 ]
 
