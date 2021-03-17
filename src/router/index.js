@@ -81,6 +81,24 @@ const routes = [
         component: () => import('@/views/texture/index.vue')
       }
     ]
+  },
+  {
+    path: '/geometry',
+    name: 'Geometry',
+    redirect: 'geometry/teapot',
+    component: RouterTransition,
+    children: [
+      {
+        path: 'teapot',
+        name: 'GeoTeapot',
+        component: () => import('@/views/geometry/teapot.vue')
+      },
+      {
+        path: 'car',
+        name: 'GeoCar',
+        component: () => import('@/views/geometry/car/index.vue')
+      }
+    ]
   }
 ]
 
