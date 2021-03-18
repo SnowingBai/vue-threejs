@@ -43,8 +43,8 @@ export default defineComponent({
     function init () {
       scene = new THREE.Scene()
 
-      camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 20000)
-      camera.position.set(20, 180, 280)
+      camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 8000)
+      camera.position.set(-100, 100, 200)
 
       const hemiLight = new THREE.HemisphereLight(0xffffff, 0x444444)
       hemiLight.position.set(0, 1, 0)
