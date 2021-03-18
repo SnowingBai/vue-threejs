@@ -11,7 +11,7 @@
 <script>
 import { defineComponent } from 'vue'
 export default defineComponent({
-  name: 'RouterTransition',
+  name: 'Content',
   setup () {
     return {}
   }

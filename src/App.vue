@@ -14,4 +14,8 @@ body {
   color: #000;
   font-size: 14px;
 }
+a {
+  text-decoration: none;
+  color: inherit;
+}
 </style>

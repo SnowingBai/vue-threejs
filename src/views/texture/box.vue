@@ -1,5 +1,5 @@
 <template>
-  <div></div>
+  <div id="TextureBox"></div>
 </template>
 
 <script>
@@ -7,7 +7,7 @@ import * as THREE from 'three'
 
 import { defineComponent, onMounted } from 'vue'
 export default defineComponent({
-  name: 'Texture',
+  name: 'TextureBox',
   setup () {
     let scene, camera, renderer, mesh
 
@@ -27,7 +27,8 @@ export default defineComponent({
       renderer = new THREE.WebGLRenderer({ antialias: true })
       renderer.setPixelRatio(window.devicePixelRatio)
       renderer.setSize(window.innerWidth, window.innerHeight)
-      document.body.appendChild(renderer.domElement)
+      const container = document.getElementById('TextureBox')
+      container.appendChild(renderer.domElement)
 
       window.addEventListener('resize', onWindowResize)
     }
