@@ -65,8 +65,6 @@ export default defineComponent({
       loader.load('models/car.fbx', function (object) {
         object.traverse((child) => {
           if (child instanceof THREE.Mesh) {
-            console.log(child.name)
-
             if (woods.includes(child.name)) {
               child.material.map = texture
             } else if (child.name === '货斗') {

@@ -96,12 +96,12 @@ const routes = [
       {
         path: 'car',
         name: 'GeoCar',
-        component: () => import('@/views/geometry/car/index.vue')
+        component: () => import('@/views/geometry/car.vue')
       },
       {
-        path: 'carmodel',
-        name: 'CarModel',
-        component: () => import('@/views/geometry/car/models.vue')
+        path: 'modelCar',
+        name: 'GeoModelCar',
+        component: () => import('@/views/geometry/modelCar.vue')
       }
     ]
   }
