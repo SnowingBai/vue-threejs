@@ -41,6 +41,24 @@ export default defineComponent({
       bevelThickness: 1
     }
 
+    const extrudeSettings4 = {
+      depth: 100,
+      bevelEnabled: true,
+      bevelSegments: 2,
+      steps: 2,
+      bevelSize: 1,
+      bevelThickness: 1
+    }
+
+    const extrudeSettings5 = {
+      depth: 20,
+      bevelEnabled: true,
+      bevelSegments: 2,
+      steps: 2,
+      bevelSize: 1,
+      bevelThickness: 1
+    }
+
     function init () {
       scene = new THREE.Scene()
 
@@ -65,6 +83,8 @@ export default defineComponent({
 
       crossbeam(0, 0, 160, 0, 0, 0)
 
+      baseplate(-310, 50, 10, Math.PI * 0.5, 0, 0)
+
       // renderer
       renderer = new THREE.WebGLRenderer({ antialias: true })
       renderer.setPixelRatio(window.devicePixelRatio)
@@ -79,7 +99,7 @@ export default defineComponent({
       window.addEventListener('resize', onWindowResize)
     }
 
-    function addShape (shape, extrudeSettings, x, y, z, rx, ry, rz) {
+    function addShape (shape, extrudeSettings, x, y, z, rx, ry, rz, color = 0x2C85E1) {
       const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings)
       const mesh = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({ color }))
       mesh.position.set(x, y, z)
@@ -88,7 +108,6 @@ export default defineComponent({
     }
 
     function addWheel (x, y, z, rx, ry, rz) {
-      // 底盘
       const mesh = new THREE.Mesh(
         new THREE.CylinderGeometry(100, 100, 20, 20),
         material
@@ -132,18 +151,66 @@ export default defineComponent({
     }
 
     function crossbeam (x, y, z, rx, ry, rz) {
-      const mesh = new THREE.Mesh(
+      const beam = new THREE.Mesh(
         new THREE.BoxGeometry(50, 40, 460),
         material
       )
 
-      const mesh1 = new THREE.Mesh(
+      const beam1 = new THREE.Mesh(
         new THREE.BoxGeometry(50, 40, 460),
         material
       )
-      mesh1.position.set(300, 0, 0)
-      mesh.add(mesh1)
+      beam1.position.set(300, 0, 0)
+      beam.add(beam1)
 
+      const beamTrapezoid = new THREE.Shape()
+        .moveTo(0, 30)
+        .lineTo(380, 30)
+        .lineTo(380, 20)
+        .lineTo(190, 0)
+        .lineTo(0, 20)
+        .lineTo(0, 30)
+
+      const trapezoid = new THREE.Shape()
+        .moveTo(10, 0)
+        .lineTo(0, 60)
+        .lineTo(80, 60)
+        .lineTo(70, 0)
+        .lineTo(10, 0)
+
+      beam.add(addShape(beamTrapezoid, extrudeSettings, 130, -20, 230, 0, Math.PI * 0.5, 0))
+      beam.add(addShape(trapezoid, extrudeSettings4, -50, -30, 80, 0, Math.PI * 0.5, 0))
+      beam.add(addShape(trapezoid, extrudeSettings4, 100, -30, 80, 0, Math.PI * 0.5, 0))
+      beam.add(addShape(trapezoid, extrudeSettings4, 250, -30, 80, 0, Math.PI * 0.5, 0))
+
+      group.add(beam)
+      beam.position.set(x, y, z)
+      beam.rotation.set(rx, ry, rz)
+    }
+
+    function baseplate (x, y, z, rx, ry, rz) {
+      const roundedRectShape = new THREE.Shape();
+      (function roundedRect (ctx, x, y, width, height, radius) {
+        ctx.moveTo(x, y + radius)
+        ctx.lineTo(x, y + height - radius)
+        ctx.quadraticCurveTo(x, y + height, x + radius, y + height)
+        ctx.lineTo(x + width - radius, y + height)
+        ctx.quadraticCurveTo(x + width, y + height, x + width, y + height - radius)
+        ctx.lineTo(x + width, y + radius)
+        ctx.quadraticCurveTo(x + width, y, x + width - radius, y)
+        ctx.lineTo(x + radius, y)
+        ctx.quadraticCurveTo(x, y, x, y + radius)
+
+        const holePath = new THREE.Path()
+          .moveTo(x + 120, y + 50)
+          .lineTo(x + 120, y + height - 50)
+          .lineTo(x + width - 120, y + height - 50)
+          .lineTo(x + width - 120, y + 50)
+          .lineTo(x + 120, y + 50)
+        ctx.holes.push(holePath)
+      })(roundedRectShape, 0, 0, 900, 380, 190)
+
+      const mesh = addShape(roundedRectShape, extrudeSettings5, 0, 0, 0, 0, 0, 0)
       group.add(mesh)
       mesh.position.set(x, y, z)
       mesh.rotation.set(rx, ry, rz)
