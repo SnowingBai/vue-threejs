@@ -1,11 +1,11 @@
 <template>
-  <div id="CubeWrapper"></div>
+  <div id="CubeWrap"></div>
 </template>
 
 <script>
 import * as THREE from 'three'
 
-import { defineComponent, onMounted } from 'vue'
+import { defineComponent, onMounted, onUnmounted } from 'vue'
 export default defineComponent({
   name: 'CameraCube',
   setup () {
@@ -24,7 +24,8 @@ export default defineComponent({
       renderer.setPixelRatio(window.devicePixelRatio)
       renderer.setSize(window.innerWidth, window.innerHeight)
       renderer.outputEncoding = THREE.sRGBEncoding
-      document.body.appendChild(renderer.domElement)
+      const container = document.getElementById('CubeWrap')
+      container.appendChild(renderer.domElement)
 
       scene = new THREE.Scene()
       scene.background = texture
@@ -64,10 +65,10 @@ export default defineComponent({
       torus = new THREE.Mesh(new THREE.TorusKnotGeometry(10, 5, 128, 16), material)
       scene.add(torus)
 
-      window.addEventListener('resize', onWindowResized)
+      window.addEventListener('resize', onWindowResize)
     }
 
-    function onWindowResized () {
+    function onWindowResize () {
       renderer.setSize(window.innerWidth, window.innerHeight)
 
       camera.aspect = window.innerWidth / window.innerHeight
@@ -136,6 +137,10 @@ export default defineComponent({
         init(texture)
         animate()
       })
+    })
+
+    onUnmounted(() => {
+      window.removeEventListener('resize', onWindowResize)
     })
     return {}
   }

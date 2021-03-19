@@ -1,12 +1,12 @@
 <template>
-  <div id="GeoCarWrapper"></div>
+  <div id="GeoCarWrap"></div>
 </template>
 
 <script>
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
-import { defineComponent, onMounted } from 'vue'
+import { defineComponent, onMounted, onUnmounted } from 'vue'
 
 export default defineComponent({
   name: 'GeoCar',
@@ -89,7 +89,7 @@ export default defineComponent({
       renderer = new THREE.WebGLRenderer({ antialias: true })
       renderer.setPixelRatio(window.devicePixelRatio)
       renderer.setSize(window.innerWidth, window.innerHeight)
-      const container = document.getElementById('GeoCarWrapper')
+      const container = document.getElementById('GeoCarWrap')
       container.appendChild(renderer.domElement)
 
       controls = new OrbitControls(camera, renderer.domElement)
@@ -230,6 +230,10 @@ export default defineComponent({
     onMounted(() => {
       init()
       render()
+    })
+
+    onUnmounted(() => {
+      window.removeEventListener('resize', onWindowResize)
     })
 
     return {}

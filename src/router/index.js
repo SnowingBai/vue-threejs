@@ -12,6 +12,7 @@ export const routes = [
       {
         path: '/demo',
         name: 'Demo',
+        meta: { title: 'Demo' },
         component: () => import('@/views/Demo.vue')
       },
       {
@@ -23,21 +24,25 @@ export const routes = [
           {
             path: 'array',
             name: 'CameraArray',
+            meta: { title: 'Array' },
             component: () => import('@/views/camera/array.vue')
           },
           {
             path: 'group',
             name: 'CameraGroup',
+            meta: { title: 'Group' },
             component: () => import('@/views/camera/group.vue')
           },
           {
             path: 'cube',
             name: 'CameraCube',
+            meta: { title: 'Cube' },
             component: () => import('@/views/camera/cube.vue')
           },
           {
             path: 'stereo',
             name: 'CameraStereo',
+            meta: { title: 'Stereo' },
             component: () => import('@/views/camera/stereo.vue')
           }
         ]
@@ -51,6 +56,7 @@ export const routes = [
           {
             path: 'box',
             name: 'TextureBox',
+            meta: { title: 'Box' },
             component: () => import('@/views/texture/box.vue')
           }
         ]
@@ -64,21 +70,25 @@ export const routes = [
           {
             path: 'teapot',
             name: 'GeoTeapot',
+            meta: { title: 'Teapot' },
             component: () => import('@/views/geometry/teapot.vue')
           },
           {
             path: 'car',
             name: 'GeoCar',
+            meta: { title: 'Car' },
             component: () => import('@/views/geometry/car.vue')
           },
           {
             path: 'modelCar',
             name: 'GeoModelCar',
+            meta: { title: 'ModelCar' },
             component: () => import('@/views/geometry/modelCar.vue')
           },
           {
             path: '/sphereGeometry',
             name: 'SphereGeometry',
+            meta: { title: 'Sphere' },
             component: () => import('@/views/geometry/sphereGeometry.vue')
           }
         ]
@@ -92,16 +102,13 @@ export const routes = [
           {
             path: 'line',
             name: 'Line',
+            meta: { title: 'Line' },
             component: () => import('@/views/others/line.vue')
-          },
-          {
-            path: '/activeline',
-            name: 'ActiveLine',
-            component: () => import('@/views/others/activeLine.vue')
           },
           {
             path: '/half',
             name: 'Half',
+            meta: { title: 'Half' },
             component: () => import('@/views/others/half.vue')
           }
         ]

@@ -1,5 +1,5 @@
 <template>
-  <div id="GeoTeapotWrapper"></div>
+  <div id="GeoTeapotWrap"></div>
 </template>
 
 <script>
@@ -7,7 +7,7 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 import { TeapotGeometry } from 'three/examples/jsm/geometries/TeapotGeometry'
 
-import { defineComponent, onMounted } from 'vue'
+import { defineComponent, onMounted, onUnmounted } from 'vue'
 export default defineComponent({
   name: 'GeoTeapot',
   setup () {
@@ -56,7 +56,7 @@ export default defineComponent({
       renderer.setPixelRatio(window.devicePixelRatio)
       renderer.setSize(window.innerWidth, window.innerHeight)
       renderer.outputEncoding = THREE.sRGBEncoding
-      const container = document.getElementById('GeoTeapotWrapper')
+      const container = document.getElementById('GeoTeapotWrap')
       container.appendChild(renderer.domElement)
 
       cameraControls = new OrbitControls(camera, renderer.domElement)
@@ -100,6 +100,10 @@ export default defineComponent({
     onMounted(() => {
       init()
       render()
+    })
+
+    onUnmounted(() => {
+      window.removeEventListener('resize', onWindowResize)
     })
     return {}
   }

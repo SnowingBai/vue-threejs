@@ -1,5 +1,5 @@
 <template>
-  <div id="CameraWraper"></div>
+  <div id="CameraWrap"></div>
 </template>
 
 <script>
@@ -21,7 +21,7 @@ export default defineComponent({
     let cameraPerspective, cameraPerspectiveHelper
 
     function init () {
-      const container = document.getElementById('CameraWraper')
+      const container = document.getElementById('CameraWrap')
       scene = new THREE.Scene()
 
       // 透视相机 -1

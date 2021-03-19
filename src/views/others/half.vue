@@ -1,5 +1,5 @@
 <template>
-  <div id="halfWraper"></div>
+  <div id="halfWrap"></div>
 </template>
 
 <script>
@@ -23,7 +23,7 @@ export default defineComponent({
     let scene, camera, renderer
 
     function init () {
-      const container = document.getElementById('halfWraper')
+      const container = document.getElementById('halfWrap')
       scene = new THREE.Scene()
 
       camera = new THREE.PerspectiveCamera(50, aspect, 1, 10000)

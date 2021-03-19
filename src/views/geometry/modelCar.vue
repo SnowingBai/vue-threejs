@@ -1,5 +1,5 @@
 <template>
-  <div id="carModelsWrapper"></div>
+  <div id="carModelsWrap"></div>
 </template>
 
 <script>
@@ -7,7 +7,7 @@ import * as THREE from 'three'
 import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
 
-import { defineComponent, onMounted } from 'vue'
+import { defineComponent, onMounted, onUnmounted } from 'vue'
 export default defineComponent({
   name: 'CarModels',
   setup () {
@@ -86,7 +86,7 @@ export default defineComponent({
       renderer = new THREE.WebGLRenderer({ antialias: true })
       renderer.setPixelRatio(window.devicePixelRatio)
       renderer.setSize(window.innerWidth, window.innerHeight)
-      const container = document.getElementById('carModelsWrapper')
+      const container = document.getElementById('carModelsWrap')
       container.appendChild(renderer.domElement)
 
       controls = new OrbitControls(camera, renderer.domElement)
@@ -114,6 +114,10 @@ export default defineComponent({
     onMounted(() => {
       init()
       animate()
+    })
+
+    onUnmounted(() => {
+      window.removeEventListener('resize', onWindowResize)
     })
     return {}
   }

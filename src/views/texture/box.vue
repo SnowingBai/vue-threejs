@@ -5,7 +5,7 @@
 <script>
 import * as THREE from 'three'
 
-import { defineComponent, onMounted } from 'vue'
+import { defineComponent, onMounted, onUnmounted } from 'vue'
 export default defineComponent({
   name: 'TextureBox',
   setup () {
@@ -53,6 +53,10 @@ export default defineComponent({
     onMounted(() => {
       init()
       animate()
+    })
+
+    onUnmounted(() => {
+      window.removeEventListener('resize', onWindowResize)
     })
     return {}
   }

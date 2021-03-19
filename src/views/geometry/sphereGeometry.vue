@@ -1,5 +1,5 @@
 <template>
-  <div id="SphereGeometryWraper"></div>
+  <div id="SphereGeometryWrap"></div>
 </template>
 
 <script>
@@ -23,7 +23,7 @@ export default defineComponent({
     let scene, camera, renderer
 
     function init () {
-      const container = document.getElementById('SphereGeometryWraper')
+      const container = document.getElementById('SphereGeometryWrap')
       scene = new THREE.Scene()
 
       camera = new THREE.PerspectiveCamera(50, aspect, 1, 10000)

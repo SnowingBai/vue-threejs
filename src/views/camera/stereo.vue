@@ -1,12 +1,12 @@
 <template>
-  <div id="StereoWrapper"></div>
+  <div id="StereoWrap"></div>
 </template>
 
 <script>
 import * as THREE from 'three'
 // import { StereoEffect } from 'three/examples/jsm/effects/StereoEffect.js'
 
-import { defineComponent, onMounted } from 'vue'
+import { defineComponent, onMounted, onUnmounted } from 'vue'
 export default defineComponent({
   name: 'CameraStereo',
   setup () {
@@ -19,7 +19,7 @@ export default defineComponent({
     let windowHalfY = window.innerHeight / 2
 
     function init () {
-      const container = document.getElementById('StereoWrapper')
+      const container = document.getElementById('StereoWrap')
 
       /**
        * camera
@@ -124,6 +124,10 @@ export default defineComponent({
     onMounted(() => {
       init()
       animate()
+    })
+
+    onUnmounted(() => {
+      window.removeEventListener('resize', onWindowResize)
     })
     return {}
   }
