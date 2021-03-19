@@ -86,6 +86,7 @@ export default defineComponent({
       renderer = new THREE.WebGLRenderer({ antialias: true })
       renderer.setPixelRatio(window.devicePixelRatio)
       renderer.setSize(window.innerWidth, window.innerHeight)
+      // renderer.outputEncoding = THREE.sRGBEncoding
       const container = document.getElementById('carModelsWrap')
       container.appendChild(renderer.domElement)
 

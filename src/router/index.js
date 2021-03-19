@@ -94,6 +94,20 @@ export const routes = [
         ]
       },
       {
+        path: '/light',
+        name: 'Light',
+        redirect: '/light/spotLight',
+        component: RouterTransition,
+        children: [
+          {
+            path: 'spotLight',
+            name: 'SpotLight',
+            meta: { title: 'SpotLight' },
+            component: () => import('@/views/light/spotLight.vue')
+          }
+        ]
+      },
+      {
         path: '/others',
         name: 'Others',
         redirect: '/others/line',

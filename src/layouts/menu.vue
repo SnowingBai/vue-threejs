@@ -14,22 +14,20 @@
         >
           {{ menu.name }}
         </div>
-        <transition name="zoom-fade" mode="out-in" appear>
+        <div
+          class="child-wrap"
+          v-show="openKeys.includes(menu.name)"
+        >
           <div
-            class="child-wrap"
-            v-show="openKeys.includes(menu.name)"
+            v-for="(child, idx) in menu.children"
+            :key="`${index}-${idx}`"
+            :class="selectedKeys.includes(child.name) ? 'selected' : ''"
+            class="child-item"
+            @click="clickMenuItem(child)"
           >
-            <div
-              v-for="(child, idx) in menu.children"
-              :key="`${index}-${idx}`"
-              :class="selectedKeys.includes(child.name) ? 'selected' : ''"
-              class="child-item"
-              @click="clickMenuItem(child)"
-            >
-              {{ child.meta && child.meta.title }}
-            </div>
+            {{ child.meta && child.meta.title }}
           </div>
-        </transition>
+        </div>
       </div>
       <div
         v-else
@@ -109,7 +107,8 @@ export default defineComponent({
     padding: 0 20px;
     background: rgba(255, 255, 255, 0.1);
     cursor: pointer;
-    &.selected {
+    &.selected,
+    &:hover {
       background: rgba(255, 255, 255, 0.2);
     }
   }
