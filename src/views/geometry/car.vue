@@ -63,7 +63,7 @@ export default defineComponent({
       scene = new THREE.Scene()
 
       camera = new THREE.PerspectiveCamera(45, window.innerWidth / innerHeight, 1, 80000)
-      camera.position.z = 1300
+      camera.position.z = 1700
 
       // light
       ambientLight = new THREE.AmbientLight(0x333333)
@@ -74,6 +74,8 @@ export default defineComponent({
       // group
       group = new THREE.Group()
       scene.add(group)
+
+      group.rotation.set(Math.PI * 0.25, 0, 0)
 
       // wheel
       addWheel(0, 0, 400, Math.PI * 0.5, 0, 0)
@@ -240,6 +242,3 @@ export default defineComponent({
   }
 })
 </script>
-
-<style lang='less' scoped>
-</style>

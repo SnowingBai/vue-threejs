@@ -16,6 +16,94 @@ export const routes = [
         component: () => import('@/views/Demo.vue')
       },
       {
+        path: '/areas',
+        name: 'Areas',
+        redirect: '/areas/building',
+        component: RouterTransition,
+        children: [
+          {
+            path: 'building',
+            name: 'Building',
+            meta: { title: 'Building' },
+            component: () => import('@/views/areas/building.vue')
+          },
+          {
+            path: 'city',
+            name: 'City',
+            meta: { title: 'City' },
+            component: () => import('@/views/areas/city.vue')
+          },
+          {
+            path: 'snowCity',
+            name: 'SnowCity',
+            meta: { title: 'SnowCity' },
+            component: () => import('@/views/areas/snowCity.vue')
+          },
+          {
+            path: 'cityGroup',
+            name: 'CityGroup',
+            meta: { title: 'CityGroup' },
+            component: () => import('@/views/areas/cityGroup.vue')
+          },
+          {
+            path: 'zj',
+            name: 'ZJ',
+            meta: { title: 'ZJ' },
+            component: () => import('@/views/areas/zj.vue')
+          },
+          {
+            path: 'cityModel',
+            name: 'CityModel',
+            meta: { title: 'CityModel' },
+            component: () => import('@/views/areas/cityModel.vue')
+          },
+          {
+            path: 'earth',
+            name: 'Earth',
+            meta: { title: 'Earth' },
+            component: () => import('@/views/areas/earth.vue')
+          },
+          {
+            path: 'hangzhou',
+            name: 'Hangzhou',
+            meta: { title: 'Hangzhou' },
+            component: () => import('@/views/areas/hangzhou.vue')
+          }
+        ]
+      },
+      {
+        path: '/animation',
+        name: 'Animation',
+        redirect: '/animation/moveLine',
+        component: RouterTransition,
+        children: [
+          {
+            path: 'moveLine',
+            name: 'MoveLine',
+            meta: { title: 'MoveLine' },
+            component: () => import('@/views/animation/moveLine.vue')
+          },
+          {
+            path: 'movePath',
+            name: 'MovePath',
+            meta: { title: 'MovePath' },
+            component: () => import('@/views/animation/movePath.vue')
+          },
+          {
+            path: 'wall',
+            name: 'Wall',
+            meta: { title: 'Wall' },
+            component: () => import('@/views/animation/wall.vue')
+          }
+          // {
+          //   path: 'test',
+          //   name: 'Test',
+          //   meta: { title: 'Test' },
+          //   component: () => import('@/views/animation/test.vue')
+          // }
+        ]
+      },
+      {
         path: '/camera',
         name: 'Camera',
         redirect: '/camera/array',
@@ -48,20 +136,6 @@ export const routes = [
         ]
       },
       {
-        path: '/texture',
-        name: 'Texture',
-        redirect: '/texture/box',
-        component: RouterTransition,
-        children: [
-          {
-            path: 'box',
-            name: 'TextureBox',
-            meta: { title: 'Box' },
-            component: () => import('@/views/texture/box.vue')
-          }
-        ]
-      },
-      {
         path: '/geometry',
         name: 'Geometry',
         redirect: '/geometry/teapot',
@@ -86,10 +160,16 @@ export const routes = [
             component: () => import('@/views/geometry/modelCar.vue')
           },
           {
-            path: '/sphereGeometry',
-            name: 'SphereGeometry',
-            meta: { title: 'Sphere' },
-            component: () => import('@/views/geometry/sphereGeometry.vue')
+            path: '/mirror',
+            name: 'Mirror',
+            meta: { title: 'Mirror' },
+            component: () => import('@/views/geometry/mirror.vue')
+          },
+          {
+            path: '/factory',
+            name: 'Factory',
+            meta: { title: 'Factory' },
+            component: () => import('@/views/geometry/factory.vue')
           }
         ]
       },
@@ -104,6 +184,40 @@ export const routes = [
             name: 'SpotLight',
             meta: { title: 'SpotLight' },
             component: () => import('@/views/light/spotLight.vue')
+          }
+        ]
+      },
+      // {
+      //   path: '/sprites',
+      //   name: 'Sprites',
+      //   redirect: '/sprites/snow',
+      //   component: RouterTransition,
+      //   children: [
+      //     {
+      //       path: 'snow',
+      //       name: 'Snow',
+      //       meta: { title: 'Snow' },
+      //       component: () => import('@/views/sprites/snow.vue')
+      //     }
+      //   ]
+      // },
+      {
+        path: '/texture',
+        name: 'Texture',
+        redirect: '/texture/box',
+        component: RouterTransition,
+        children: [
+          {
+            path: 'box',
+            name: 'TextureBox',
+            meta: { title: 'Box' },
+            component: () => import('@/views/texture/box.vue')
+          },
+          {
+            path: 'mine',
+            name: 'Mine',
+            meta: { title: 'Mine' },
+            component: () => import('@/views/texture/mine.vue')
           }
         ]
       },
@@ -124,6 +238,12 @@ export const routes = [
             name: 'Half',
             meta: { title: 'Half' },
             component: () => import('@/views/others/half.vue')
+          },
+          {
+            path: '/water',
+            name: 'Water',
+            meta: { title: 'Water' },
+            component: () => import('@/views/others/water.vue')
           }
         ]
       }

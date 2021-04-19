@@ -11,7 +11,7 @@ export default defineComponent({
   name: 'Half',
   setup () {
     const SCREEN_WIDTH = window.innerWidth
-    const SCREEN_HEIGHT = window.innerWidth
+    const SCREEN_HEIGHT = window.innerHeight
     const aspect = SCREEN_WIDTH / SCREEN_HEIGHT
     // 三维向量
     const clipPlanes = [
@@ -75,6 +75,3 @@ export default defineComponent({
   }
 })
 </script>
-
-<style lang='less' scoped>
-</style>

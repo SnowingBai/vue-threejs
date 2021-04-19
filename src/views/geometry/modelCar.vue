@@ -55,11 +55,11 @@ export default defineComponent({
       scene.add(dirLight)
 
       const material = new THREE.MeshPhongMaterial({ color: 0xD4AF37 })
-      const texture = new THREE.TextureLoader().load('/textures/crate.gif')
-      const metalMeshTexture = new THREE.TextureLoader().load('/textures/metal.jpg')
-      const metalMeshTexture1 = new THREE.TextureLoader().load('/textures/metal1.jpg')
-      const metalMeshTexture2 = new THREE.TextureLoader().load('/textures/metal2.jpg')
-      const wheelTexture = new THREE.TextureLoader().load('/textures/wheel.jpg')
+      const texture = new THREE.TextureLoader().load('/textures/car/crate.gif')
+      const metalMeshTexture = new THREE.TextureLoader().load('/textures/car/metal.jpg')
+      const metalMeshTexture1 = new THREE.TextureLoader().load('/textures/car/metal1.jpg')
+      const metalMeshTexture2 = new THREE.TextureLoader().load('/textures/car/metal2.jpg')
+      const wheelTexture = new THREE.TextureLoader().load('/textures/car/wheel.jpg')
 
       const loader = new FBXLoader()
       loader.load('models/car.fbx', function (object) {
