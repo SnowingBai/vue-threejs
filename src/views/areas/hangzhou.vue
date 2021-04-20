@@ -9,7 +9,6 @@
 import * as THREE from 'three'
 import { MapControls } from 'three/examples/jsm/controls/OrbitControls'
 import { BufferGeometryUtils } from 'three/examples/jsm/utils/BufferGeometryUtils'
-import { Water } from 'three/examples/jsm/objects/Water'
 
 import BuildModels from '@/utils/BuildModels'
 import ThreeBasic from '@/utils/ThreeBasic'
@@ -21,40 +20,36 @@ export default defineComponent({
     let scene, camera, renderer
     let controls
     let sun
-    let waterMaterial
     const geometries = []
     const AnimatedLineDistances = []
     // Center
     const Center = {
-      longitude: -3.188822,
-      latitude: 55.943686
+      longitude: 120.2070046,
+      latitude: 30.2473306
     }
 
     // 3D Groups
     let ir = null
     let irRoad = null
     let irLine = null
-    let irWater = null
 
     function init () {
       scene = new THREE.Scene()
       scene.background = new THREE.Color(0x222222)
       scene.fog = new THREE.Fog(0x444444, 10, 150)
 
-      camera = new THREE.PerspectiveCamera(25, window.innerWidth / window.innerHeight, 1, 200)
-      camera.position.set(8, 4, 0)
+      camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 1, 1000)
+      camera.position.set(8, 4, 10)
 
       // init ir
       ir = ThreeBasic.AddGroup('ir', 'Interactive-Root')
       irRoad = ThreeBasic.AddGroup('IRR', 'irRoad')
       irLine = ThreeBasic.AddGroup('IRL', 'irLine')
-      irWater = ThreeBasic.AddGroup('IRW', 'irWater')
       scene.add(ir)
 
       nextTick(() => {
         ir.add(irRoad)
         ir.add(irLine)
-        ir.add(irWater)
       })
 
       // sun light
@@ -64,10 +59,41 @@ export default defineComponent({
 
       // 加载灯光
       loadLights()
-      // 加载建筑物
-      loadBuildings()
-      // 加载水域
-      loadWaters()
+
+      const loader = new THREE.FileLoader()
+      loader.load('hangzhou/map.geojson', (data) => {
+        const res = JSON.parse(data)
+        const features = res.features
+
+        for (let i = 0; i < features.length; i++) {
+          const fel = features[i]
+
+          if (!fel.properties) return
+
+          const info = fel.properties
+          if (info) {
+            if (info.building) {
+              // 建筑物
+              addBuilding(fel.geometry.coordinates, info, info['building:levels'])
+            } else if (info.highway) {
+              // 公路
+              if (fel.geometry.type === 'LineString' && info.highway !== 'pedestrian' && info.highway !== 'footway' && info.highway !== 'path') {
+                addRoad(fel.geometry.coordinates, info)
+              }
+            }
+          }
+        }
+
+        // 建筑材质
+        const buildingMaterial = new THREE.MeshPhongMaterial({
+          transparent: true,
+          opacity: 0.95
+        })
+        const mergeGeometry = BufferGeometryUtils.mergeBufferGeometries(geometries)
+        const mesh = new THREE.Mesh(mergeGeometry, buildingMaterial)
+        mesh.position.y = -1
+        scene.add(mesh)
+      })
 
       renderer = new THREE.WebGLRenderer({ antialias: true })
       renderer.setSize(window.innerWidth, window.innerHeight)
@@ -109,40 +135,6 @@ export default defineComponent({
       })
     }
 
-    // 加载建筑物
-    function loadBuildings () {
-      const material = new THREE.MeshPhongMaterial({
-        transparent: true,
-        opacity: 0.95
-      })
-
-      const loader = new THREE.FileLoader()
-      loader.load('hangzhou/building.geojson', (data) => {
-        const res = JSON.parse(data)
-        const features = res.features
-
-        for (let i = 0; i < features.length; i++) {
-          const fel = features[i]
-
-          if (!fel.properties) return
-
-          const info = fel.properties
-          if (info.tags && info.tags.building) {
-            addBuilding(fel.geometry.coordinates, info, info.tags['building:levels'])
-          }
-        }
-
-        nextTick(() => {
-          const mergeGeometry = BufferGeometryUtils.mergeBufferGeometries(geometries)
-          const mesh = new THREE.Mesh(mergeGeometry, material)
-          mesh.position.y = -1
-          scene.add(mesh)
-
-          loadRoads()
-        })
-      })
-    }
-
     // 添加单个建筑物
     function addBuilding (d, info, height = 1) {
       if (!height) height = 1
@@ -176,29 +168,6 @@ export default defineComponent({
         geometry.rotateZ(Math.PI)
         geometries.push(geometry)
       }
-    }
-
-    // 加载道路
-    function loadRoads () {
-      const loader = new THREE.FileLoader()
-      loader.load('hangzhou/highway.geojson', (data) => {
-        const res = JSON.parse(data)
-        const features = res.features
-
-        for (let i = 0; i < features.length; i++) {
-          const fel = features[i]
-
-          if (!fel.properties) return
-
-          const info = fel.properties
-
-          if (info.tags && info.tags.highway) {
-            if (fel.geometry.type === 'LineString' && info.tags.highway !== 'pedestrian' && info.tags.highway !== 'footway' && info.tags.highway !== 'path') {
-              addRoad(fel.geometry.coordinates, info)
-            }
-          }
-        }
-      })
     }
 
     // 添加单条道路
@@ -274,79 +243,6 @@ export default defineComponent({
       }
     }
 
-    // 加载水域
-    function loadWaters () {
-      const texture = new THREE.TextureLoader().load('hangzhou/textures/waternormals.png', texture => {
-        texture.wrapS = texture.wrapT = THREE.RepeatWrapping
-      })
-
-      waterMaterial = {
-        textureWidth: 0.5,
-        textureHeight: 0.5,
-        waterNormals: texture,
-        alpha: 1.0,
-        sunDirection: sun.position.clone().normalize(),
-        sunColor: 0xDDEBFF,
-        waterColor: 0xA6C8FA,
-        distortionScale: 2,
-        fog: scene.fog !== undefined
-      }
-
-      const loader = new THREE.FileLoader()
-      loader.load('hangzhou/water.geojson', (data) => {
-        const res = JSON.parse(data)
-        const features = res.features
-
-        for (let i = 0; i < features.length; i++) {
-          const fel = features[i]
-          if (!fel.properties) return
-
-          if (fel.properties.tags.natural === 'water' && fel.geometry.type === 'Polygon') {
-            addWater(fel.geometry.coordinates, fel.properties)
-          }
-        }
-      })
-    }
-
-    // 添加单条水域
-    function addWater (d, info) {
-      const holes = []
-      let shape
-
-      for (let i = 0; i < d.length; i++) {
-        const el = d[i]
-        if (i === 0) {
-          shape = BuildModels.GenShape(el, Center)
-        } else {
-          holes.push(BuildModels.GenShape(el, Center))
-        }
-      }
-
-      for (let h = 0; h < holes.length; h++) {
-        shape.holes.push(holes[h])
-      }
-
-      const geometry = BuildModels.GenWaterGeometry(shape, {
-        curveSegments: 2,
-        steps: 1,
-        depth: 0.01,
-        bevelEnabled: false
-      })
-
-      geometry.rotateX(Math.PI / 2)
-      geometry.rotateZ(Math.PI)
-
-      const water = new Water(geometry, waterMaterial)
-      irWater.add(water)
-    }
-
-    // 更新水域
-    function updateWater () {
-      for (let i = 0; i < irWater.children.length; i++) {
-        irWater.children[i].material.uniforms.time.value += 1.0 / 700
-      }
-    }
-
     function onWindowResize () {
       camera.aspect = window.innerWidth / window.innerHeight
       camera.updateProjectionMatrix()
@@ -362,7 +258,6 @@ export default defineComponent({
       requestAnimationFrame(animete)
       controls.update()
       updateAniLines()
-      updateWater()
       render()
     }
 
