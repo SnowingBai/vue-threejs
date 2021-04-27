@@ -107,8 +107,6 @@ export default defineComponent({
       controls.dampingFactor = 0.25
       controls.minDistance = 10
       controls.maxDistance = 1000
-      controls.update()
-      // controls.addEventListener('change', render)
 
       window.addEventListener('resize', onWindowResize)
     }
@@ -226,10 +224,12 @@ export default defineComponent({
 
     // 更新流动线条
     function updateAniLines () {
+      // 通过改线虚线间隙大小实线
       if (irLine.children.length <= 0) return false
 
       for (let i = 0; i < irLine.children.length; i++) {
         const line = irLine.children[i]
+        // dashSize - 虚线大小 实线部分与间隙之和
         const dash = parseInt(line.material.dashSize)
         const length = parseInt(AnimatedLineDistances[i])
 
