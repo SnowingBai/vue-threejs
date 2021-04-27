@@ -222,6 +222,52 @@ export const routes = [
         ]
       },
       {
+        path: '/shapes',
+        name: 'Shapes',
+        redirect: '/shapes/fonts',
+        component: RouterTransition,
+        children: [
+          {
+            path: 'fonts',
+            name: 'Fonts',
+            meta: { title: 'Fonts' },
+            component: () => import('@/views/shapes/fonts.vue')
+          },
+          {
+            path: 'fontStroke',
+            name: 'FontStroke',
+            meta: { title: 'FontStroke' },
+            component: () => import('@/views/shapes/fontStroke')
+          },
+          {
+            path: 'ttf',
+            name: 'TTF',
+            meta: { title: 'TTF' },
+            component: () => import('@/views/shapes/ttf')
+          }
+        ]
+      },
+      {
+        path: '/modellist',
+        name: 'Modellist',
+        redirect: '/modellist/diamond',
+        component: RouterTransition,
+        children: [
+          {
+            path: 'diamond',
+            name: 'Diamond',
+            meta: { title: 'Diamond' },
+            component: () => import('@/views/modellist/diamond.vue')
+          },
+          {
+            path: 'drive',
+            name: 'Drive',
+            meta: { title: 'Drive' },
+            component: () => import('@/views/modellist/drive')
+          }
+        ]
+      },
+      {
         path: '/others',
         name: 'Others',
         redirect: '/others/line',
