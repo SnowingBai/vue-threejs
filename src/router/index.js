@@ -238,12 +238,6 @@ export const routes = [
             name: 'FontStroke',
             meta: { title: 'FontStroke' },
             component: () => import('@/views/shapes/fontStroke')
-          },
-          {
-            path: 'ttf',
-            name: 'TTF',
-            meta: { title: 'TTF' },
-            component: () => import('@/views/shapes/ttf')
           }
         ]
       },
