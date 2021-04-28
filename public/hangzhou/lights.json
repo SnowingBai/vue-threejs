@@ -1,56 +1,67 @@
 [
   {
-  "name": "enviorment",
-  "type": "Ambient",
-  "color":"fafafa",
-  "opacity": 0.15
-},
-{
-  "name": "front-left",
-  "type": "Point",
-  "color": "fafafa",
-  "opacity": 0.1,
-  "shadow": false,
-  "position": {
-    "x": 200,
-    "y": 90,
-    "z": 40
+    "name": "sun",
+    "type": "Directional",
+    "color": "ffffff",
+    "opacity": 0.8,
+    "position": {
+      "x": 0,
+      "y": 3,
+      "z": 0
+    }
+  },
+  {
+    "name": "enviorment",
+    "type": "Ambient",
+    "color":"fafafa",
+    "opacity": 0.15
+  },
+  {
+    "name": "front-left",
+    "type": "Point",
+    "color": "fafafa",
+    "opacity": 0.1,
+    "shadow": false,
+    "position": {
+      "x": 200,
+      "y": 90,
+      "z": 40
+    }
+  },
+  {
+    "name": "front-right",
+    "type": "Point",
+    "color": "fafafa",
+    "opacity": 0.1,
+    "shadow": false,
+    "position": {
+      "x": 200,
+      "y": 90,
+      "z": -40
+    }
+  },
+  {
+    "name": "back-left",
+    "type": "Point",
+    "color": "fafafa",
+    "opacity": 0.5,
+    "shadow": true,
+    "position": {
+      "x": -200,
+      "y": 90,
+      "z": -40
+    }
+  },
+  {
+    "name": "back-right",
+    "type": "Point",
+    "color": "fafafa",
+    "opacity": 0.1,
+    "shadow": false,
+    "position": {
+      "x": -200,
+      "y": 90,
+      "z": -40
+    }
   }
-},
-{
-  "name": "front-right",
-  "type": "Point",
-  "color": "fafafa",
-  "opacity": 0.1,
-  "shadow": false,
-  "position": {
-    "x": 200,
-    "y": 90,
-    "z": -40
-  }
-},
-{
-  "name": "back-left",
-  "type": "Point",
-  "color": "fafafa",
-  "opacity": 0.5,
-  "shadow": true,
-  "position": {
-    "x": -200,
-    "y": 90,
-    "z": -40
-  }
-},
-{
-  "name": "back-right",
-  "type": "Point",
-  "color": "fafafa",
-  "opacity": 0.1,
-  "shadow": false,
-  "position": {
-    "x": -200,
-    "y": 90,
-    "z": -40
-  }
-}
 ]

@@ -10,8 +10,8 @@ import * as THREE from 'three'
 import { MapControls } from 'three/examples/jsm/controls/OrbitControls'
 import { BufferGeometryUtils } from 'three/examples/jsm/utils/BufferGeometryUtils'
 
-import BuildModels from '@/utils/BuildModels'
-import ThreeBasic from '@/utils/ThreeBasic'
+import { CreateShape, CreateBuildingGeometry } from '@/utils/BuildModels'
+import { AddGroup, GPSRelativePosition } from '@/utils/ThreeBasic'
 
 import { defineComponent, onMounted, nextTick } from 'vue'
 export default defineComponent({
@@ -19,7 +19,6 @@ export default defineComponent({
   setup () {
     let scene, camera, renderer
     let controls
-    let sun
     const geometries = []
     const AnimatedLineDistances = []
     // Center
@@ -29,9 +28,9 @@ export default defineComponent({
     }
 
     // 3D Groups
-    let ir = null
-    let irRoad = null
-    let irLine = null
+    let groups = null
+    let roadGroups = null
+    let lineGroups = null
 
     function init () {
       scene = new THREE.Scene()
@@ -41,21 +40,16 @@ export default defineComponent({
       camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 1, 1000)
       camera.position.set(8, 4, 10)
 
-      // init ir
-      ir = ThreeBasic.AddGroup('ir', 'Interactive-Root')
-      irRoad = ThreeBasic.AddGroup('IRR', 'irRoad')
-      irLine = ThreeBasic.AddGroup('IRL', 'irLine')
-      scene.add(ir)
+      // init groups
+      groups = AddGroup('groups', 'Interactive-Root')
+      roadGroups = AddGroup('roadGroups', 'road-groups')
+      lineGroups = AddGroup('lineGroups', 'line-groups')
+      scene.add(groups)
 
       nextTick(() => {
-        ir.add(irRoad)
-        ir.add(irLine)
+        groups.add(roadGroups)
+        groups.add(lineGroups)
       })
-
-      // sun light
-      sun = new THREE.DirectionalLight(0xffffff, 0.8)
-      sun.position.set(0, 3, 0)
-      scene.add(sun)
 
       // 加载灯光
       loadLights()
@@ -65,20 +59,18 @@ export default defineComponent({
         const res = JSON.parse(data)
         const features = res.features
 
-        for (let i = 0; i < features.length; i++) {
-          const fel = features[i]
+        for (const feature of features) {
+          if (!feature.properties) return
 
-          if (!fel.properties) return
-
-          const info = fel.properties
+          const info = feature.properties
           if (info) {
             if (info.building) {
               // 建筑物
-              addBuilding(fel.geometry.coordinates, info, info['building:levels'])
+              addBuilding(feature.geometry.coordinates, info, info['building:levels'])
             } else if (info.highway) {
               // 公路
-              if (fel.geometry.type === 'LineString' && info.highway !== 'pedestrian' && info.highway !== 'footway' && info.highway !== 'path') {
-                addRoad(fel.geometry.coordinates, info)
+              if (feature.geometry.type === 'LineString' && info.highway !== 'pedestrian' && info.highway !== 'footway' && info.highway !== 'path') {
+                addRoad(feature.geometry.coordinates, info)
               }
             }
           }
@@ -89,6 +81,8 @@ export default defineComponent({
           transparent: true,
           opacity: 0.95
         })
+
+        // 合并建筑几何体 优化性能
         const mergeGeometry = BufferGeometryUtils.mergeBufferGeometries(geometries)
         const mesh = new THREE.Mesh(mergeGeometry, buildingMaterial)
         mesh.position.y = -1
@@ -102,9 +96,9 @@ export default defineComponent({
       container.appendChild(renderer.domElement)
 
       controls = new MapControls(camera, renderer.domElement)
-      controls.rotateSpeed = 0.7
+      controls.rotateSpeed = 0.5
       controls.enableDamping = true
-      controls.dampingFactor = 0.25
+      controls.dampingFactor = 0.5
       controls.minDistance = 10
       controls.maxDistance = 1000
 
@@ -118,10 +112,15 @@ export default defineComponent({
       loader.load('hangzhou/lights.json', (data) => {
         const res = JSON.parse(data)
         res.forEach(el => {
-          if (el.type === 'Ambient') {
+          if (el.type === 'Directional') {
+            light = new THREE.DirectionalLight(new THREE.Color(parseInt('0x' + el.color)), el.opacity)
+          } else if (el.type === 'Ambient') {
             light = new THREE.AmbientLight(new THREE.Color(parseInt('0x' + el.color)), el.opacity)
           } else if (el.type === 'Point') {
             light = new THREE.PointLight(new THREE.Color(parseInt('0x' + el.color)), el.opacity)
+          }
+
+          if (el && el.position) {
             light.position.set(el.position.x, el.position.y, el.position.z)
           }
 
@@ -134,32 +133,30 @@ export default defineComponent({
     }
 
     // 添加单个建筑物
-    function addBuilding (d, info, height = 1) {
-      if (!height) height = 1
-
+    function addBuilding (points, info, height = 1) {
       const holes = []
       let shape, geometry
 
-      for (let i = 0; i < d.length; i++) {
-        const el = d[i]
+      for (let i = 0; i < points.length; i++) {
+        const point = points[i]
 
         if (i === 0) {
-          // main
-          shape = BuildModels.GenShape(el, Center)
+          // shape
+          shape = CreateShape(point, Center)
         } else {
           // holes
-          holes.push(BuildModels.GenShape(el, Center))
+          holes.push(CreateShape(point, Center))
         }
 
-        for (let h = 0; h < holes.length; h++) {
-          shape.holes.push(holes[h])
+        for (const hole of holes) {
+          shape.holes.push(hole)
         }
 
-        geometry = BuildModels.GenBuildingGeometry(shape, {
-          curveSegments: 2,
+        geometry = CreateBuildingGeometry(shape, {
           steps: 1,
           depth: 0.05 * height,
-          bevelEnabled: false
+          bevelEnabled: false,
+          curveSegments: 2
         })
 
         geometry.rotateX(Math.PI / 2)
@@ -169,23 +166,18 @@ export default defineComponent({
     }
 
     // 添加单条道路
-    function addRoad (d, info) {
-      const points = []
+    function addRoad (points, info) {
+      if (points && points.length < 2) return
+      const pointsPath = []
 
-      for (let i = 0; i < d.length; i++) {
-        if (!d[0][1]) return
-
-        const el = d[i]
-
-        if (!el[0] || !el[1]) return
-
-        let elp = [el[0], el[1]]
-
-        elp = ThreeBasic.GPSRelativePosition({ latitude: elp[1], longitude: elp[0] }, Center)
-        points.push(new THREE.Vector3(elp[0], 1, elp[1]))
+      for (const point of points) {
+        if (!point[0] || !point[1]) return
+        const [x, y] = GPSRelativePosition({ longitude: point[0], latitude: point[1] }, Center)
+        pointsPath.push(new THREE.Vector3(x, 1, y))
       }
 
-      const geometry = new THREE.BufferGeometry().setFromPoints(points)
+      // setFromPoints 通过点队列设置该 BufferGeometry 的 attribute [ position ]
+      const geometry = new THREE.BufferGeometry().setFromPoints(pointsPath)
       geometry.rotateZ(Math.PI)
 
       const line = new THREE.Line(
@@ -193,14 +185,16 @@ export default defineComponent({
         new THREE.LineBasicMaterial({ color: 0x1B4686 })
       )
       line.info = info
+      // 计算 LineDashedMaterial 所需的距离的值的数组
+      // 对于几何体中的每一个顶点，计算出当前点到线的起始点的累积长度
       line.computeLineDistances()
-      irRoad.add(line)
+      roadGroups.add(line)
 
-      // ani-road
+      // animated line
       const lineLength = geometry.attributes.lineDistance.array[geometry.attributes.lineDistance.count - 1]
       if (lineLength > 0.8) {
-        const aniLine = addAnimatedLine(geometry, lineLength)
-        irLine.add(aniLine)
+        const animatedLine = addAnimatedLine(geometry, lineLength)
+        lineGroups.add(animatedLine)
       }
 
       // line.position = new THREE.Vector3(line.position.x, 0, line.position.z)
@@ -214,22 +208,20 @@ export default defineComponent({
     function addAnimatedLine (geometry, length) {
       const animatedLine = new THREE.Line(geometry, new THREE.LineDashedMaterial({ color: 0x00FFFF }))
       animatedLine.material.transparent = true
-      animatedLine.material.dashSize = 0
-      animatedLine.material.gapSize = 1000
+      animatedLine.material.dashSize = 0 // 虚线大小
+      animatedLine.material.gapSize = 1000 // 间隙大小
 
       AnimatedLineDistances.push(length)
-
       return animatedLine
     }
 
     // 更新流动线条
-    function updateAniLines () {
-      // 通过改线虚线间隙大小实线
-      if (irLine.children.length <= 0) return false
+    function updateAnimatedLine () {
+      if (!lineGroups.children.length) return false
 
-      for (let i = 0; i < irLine.children.length; i++) {
-        const line = irLine.children[i]
-        // dashSize - 虚线大小 实线部分与间隙之和
+      for (let i = 0; i < lineGroups.children.length; i++) {
+        const line = lineGroups.children[i]
+        // dashSize - 虚线大小（实线部分与间隙之和）
         const dash = parseInt(line.material.dashSize)
         const length = parseInt(AnimatedLineDistances[i])
 
@@ -257,7 +249,7 @@ export default defineComponent({
     function animete () {
       requestAnimationFrame(animete)
       controls.update()
-      updateAniLines()
+      updateAnimatedLine()
       render()
     }
 
