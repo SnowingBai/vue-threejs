@@ -1,14 +1,12 @@
 <template>
-  <div id="HangzhouWrap">
-    <div id="building-info"></div>
-    <div id="cont"></div>
-  </div>
+  <div id="HangzhouWrap"></div>
 </template>
 
 <script>
 import * as THREE from 'three'
 import { MapControls } from 'three/examples/jsm/controls/OrbitControls'
 import { BufferGeometryUtils } from 'three/examples/jsm/utils/BufferGeometryUtils'
+import Stats from 'three/examples/jsm/libs/stats.module'
 
 import { CreateShape, CreateBuildingGeometry } from '@/utils/BuildModels'
 import { AddGroup, GPSRelativePosition } from '@/utils/ThreeBasic'
@@ -19,6 +17,7 @@ export default defineComponent({
   setup () {
     let scene, camera, renderer
     let controls
+    let stats
     const geometries = []
     const AnimatedLineDistances = []
     // Center
@@ -92,7 +91,7 @@ export default defineComponent({
       renderer = new THREE.WebGLRenderer({ antialias: true })
       renderer.setSize(window.innerWidth, window.innerHeight)
       renderer.setPixelRatio(window.devicePixelRatio)
-      const container = document.getElementById('cont')
+      const container = document.getElementById('HangzhouWrap')
       container.appendChild(renderer.domElement)
 
       controls = new MapControls(camera, renderer.domElement)
@@ -101,6 +100,9 @@ export default defineComponent({
       controls.dampingFactor = 0.5
       controls.minDistance = 10
       controls.maxDistance = 1000
+
+      stats = new Stats()
+      container.appendChild(stats.dom)
 
       window.addEventListener('resize', onWindowResize)
     }
@@ -197,7 +199,6 @@ export default defineComponent({
         lineGroups.add(animatedLine)
       }
 
-      // line.position = new THREE.Vector3(line.position.x, 0, line.position.z)
       line.matrixAutoUpdate = false
       line.updateMatrix()
 
@@ -250,6 +251,7 @@ export default defineComponent({
       requestAnimationFrame(animete)
       controls.update()
       updateAnimatedLine()
+      stats.update()
       render()
     }
 
