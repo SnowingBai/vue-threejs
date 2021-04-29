@@ -2,9 +2,9 @@ import * as THREE from 'three'
 
 /**
  * Create a THREE Group
- * @param {String} name Group Name
- * @param {String} displayName Display Name
- * @return {Object} THREE.Group Object
+ * @param {string} name
+ * @param {string} displayName
+ * @return {object} THREE.Group Object
  */
 export function AddGroup (name, displayName) {
   const g = new THREE.Group()
@@ -14,13 +14,12 @@ export function AddGroup (name, displayName) {
 }
 
 /**
- * Mercator projection WGS84 > X,Y
+ * 墨卡托坐标
  * @param lat latitude
  * @param lon lontitude
- * @return {object} {x: x, y: y}
- * @public
+ * @return {object} {x, y}
  */
-export function GetXY (lat, lon) {
+export function GetMercator (lat, lon) {
   var mercator = {}
   var earthRad = 6378137
   mercator.x = lon * Math.PI / 180 * earthRad
@@ -30,13 +29,13 @@ export function GetXY (lat, lon) {
 }
 
 /**
- * GPS to Three World
- * @param {Object} objPosi {lat: Latitude, lon: Longitude}
- * @param {Object} centerPosi {lat: Latitude, lon: Longitude}
- * @return {Array} THREE.Vector3
+ * 相对中心点坐标
+ * @param {object} objPosi {latitude, longitude}
+ * @param {object} centerPosi {latitude, longitude}
+ * @return {array} THREE.Vector3
  */
 export function GPSRelativePosition (objPosi, centerPosi) {
-  const obj = GetXY(objPosi.latitude, objPosi.longitude)
-  const center = GetXY(centerPosi.latitude, centerPosi.longitude)
+  const obj = GetMercator(objPosi.latitude, objPosi.longitude)
+  const center = GetMercator(centerPosi.latitude, centerPosi.longitude)
   return [(center.x - obj.x) / 100, (center.y - obj.y) / 100]
 }
