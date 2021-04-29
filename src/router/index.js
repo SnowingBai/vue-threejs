@@ -274,6 +274,12 @@ export const routes = [
             component: () => import('@/views/others/line.vue')
           },
           {
+            path: 'dashLine',
+            name: 'DashLine',
+            meta: { title: 'DashLine' },
+            component: () => import('@/views/others/dashLine.vue')
+          },
+          {
             path: '/half',
             name: 'Half',
             meta: { title: 'Half' },
